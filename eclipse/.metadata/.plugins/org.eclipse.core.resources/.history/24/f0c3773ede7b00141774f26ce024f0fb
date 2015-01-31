@@ -1,0 +1,326 @@
+package myMod.common;
+
+import java.awt.Color;
+
+import myMod.biome.BiomeGenMy;
+import myMod.biome.WorldTypeMy;
+import myMod.block.MyOre;
+import myMod.block.RainbowWool;
+import myMod.client.ClientProxy;
+import myMod.entity.EntityRainbowSheep;
+import myMod.event.MyOnCraftEvent;
+import myMod.event.WorldGen;
+import myMod.item.MyArmor;
+import myMod.item.MyFood;
+import myMod.item.MyIngot;
+import myMod.item.MyPickaxe;
+import myMod.item.MySword;
+import myMod.util.Reference;
+import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.Item.ToolMaterial;
+import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.stats.Achievement;
+import net.minecraft.world.WorldType;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.common.AchievementPage;
+import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.BiomeDictionary.Type;
+import net.minecraftforge.common.BiomeManager;
+import net.minecraftforge.common.util.EnumHelper;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@Mod(name = Reference.MOD_NAME, modid = Reference.MOD_ID, version = Reference.VERSION)
+public class MyMod
+{
+    /**
+     * Calls the parent class's constructor with a custom ToolMaterial The
+     * arguments for the addToolMaterial() method are: "MYMATERIAL": the name of
+     * the material, 2: the harvest level of the material (-1 means the sword
+     * can mine the same stuff as any other non-tool item), 400: the durability
+     * of the sword
+     */
+    public static ToolMaterial myMaterial = EnumHelper.addToolMaterial("MY_MATERIAL", -1, 400, 7.0f, 13.0f, 12);
+    public static ArmorMaterial myArmor = EnumHelper.addArmorMaterial("MY_ARMOR", 25, new int[] { 2, 7, 4, 2 }, 10);
+
+    // Item declarations.
+    public static Item myPickaxe;
+    public static Item mySword;
+    public static Item myIngot;
+    public static Item myJam;
+
+    public static Item myHelmet;
+    public static Item myChestplate;
+    public static Item myLeggings;
+    public static Item myBoots;
+
+    // Block declarations.
+    public static Block myOre;
+    public static Block rainbowWool;
+
+    // World generator (for ores and stuff).
+    private WorldGen worldGen = new WorldGen();
+    
+    // Biomes.
+    public static BiomeGenBase myBiome;
+
+    // This is the instance of the MyMod class that Minecraft Forge uses for
+    // initiation.
+    @Instance(Reference.MOD_ID)
+    public static MyMod myMod = new MyMod();
+
+    // These are the proxies for the server and the client.
+    @SidedProxy(clientSide = Reference.CLIENT_PROXY_PATH, serverSide = Reference.COMMON_PROXY_PATH)
+    public static CommonProxy commonProxy = new CommonProxy();
+    @SideOnly(Side.CLIENT)
+    public static ClientProxy clientProxy = new ClientProxy();
+    
+    public static Achievement achievementMySword;
+
+    /**
+     * This is where anything you want to do before any other mod possibly
+     * installed is initialized is done.
+     */
+    @EventHandler
+    public void preInit(FMLPreInitializationEvent event)
+    {
+
+    }
+
+    /**
+     * This is where all your blocks, items, crafting recipes etc. is
+     * initialized and/or instantiated.
+     */
+    @EventHandler
+    public void init(FMLInitializationEvent event)
+    {
+	// Instantiation of the items:
+	myPickaxe = new MyPickaxe();
+	mySword = new MySword();
+	myIngot = new MyIngot();
+	myJam = new MyFood(3, false, Reference.MOD_ID + ":" + Reference.MY_JAM_UNLOCALIZED_NAME);
+
+	myHelmet = new MyArmor(myArmor, 4, 0).setUnlocalizedName(Reference.MY_HELMET_UNLOCALIZED_NAME).setCreativeTab(CreativeTabs.tabCombat).setTextureName(Reference.MOD_ID + ":" + Reference.MY_HELMET_UNLOCALIZED_NAME);
+	myChestplate = new MyArmor(myArmor, 4, 1).setUnlocalizedName(Reference.MY_CHESTPLATE_UNLOCALIZED_NAME).setCreativeTab(CreativeTabs.tabCombat).setTextureName(Reference.MOD_ID + ":" + Reference.MY_CHESTPLATE_UNLOCALIZED_NAME);
+	myLeggings = new MyArmor(myArmor, 4, 2).setUnlocalizedName(Reference.MY_LEGGINGS_UNLOCALIZED_NAME).setCreativeTab(CreativeTabs.tabCombat).setTextureName(Reference.MOD_ID + ":" + Reference.MY_LEGGINGS_UNLOCALIZED_NAME);
+	myBoots = new MyArmor(myArmor, 4, 3).setUnlocalizedName(Reference.MY_BOOTS_UNLOCALIZED_NAME).setCreativeTab(CreativeTabs.tabCombat).setTextureName(Reference.MOD_ID + ":" + Reference.MY_BOOTS_UNLOCALIZED_NAME);
+
+	// Instantiation of the blocks:
+	myOre = new MyOre();
+	rainbowWool = new RainbowWool();
+
+	// Registration of the items:
+	registerItems();
+	// Registration of the blocks:
+	registerBlocks();
+	// Registration of crafting recipes:
+	registerCrafting();
+	// Registration of the smelting recipes:
+	registerSmelting();
+	// World registration:
+	worldRegistration();
+	// Initializing your biome(s):
+	initializeBiomes();
+	// Registration of your biome(s):
+	registerBiomes();
+	// Registration of your entities:
+	registerEntities();
+	// Register achievements.
+	registerAchievements();
+	// Register events.
+	registerEvents();
+	
+	clientProxy.registerRenderers();
+    }
+
+    /**
+     * This is where anything you want to be done after the other mods have
+     * initialized, such as interacting with other mods in some way.
+     */
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event)
+    {
+	WorldType myWorldType = new WorldTypeMy("myWorldType");
+    }
+
+    /**
+     * A subroutine which registers all of the items of the mod.
+     */
+    private void registerItems()
+    {
+	GameRegistry.registerItem(myPickaxe, Reference.MY_PICKAXE_UNLOCALIZED_NAME);
+	GameRegistry.registerItem(mySword, Reference.MY_SWORD_UNLOCALIZED_NAME);
+	GameRegistry.registerItem(myIngot, Reference.MY_INGOT_UNLOCALIZED_NAME);
+	GameRegistry.registerItem(myJam, Reference.MY_JAM_UNLOCALIZED_NAME);
+
+	GameRegistry.registerItem(myHelmet, Reference.MY_HELMET_UNLOCALIZED_NAME);
+	GameRegistry.registerItem(myChestplate, Reference.MY_CHESTPLATE_UNLOCALIZED_NAME);
+	GameRegistry.registerItem(myLeggings, Reference.MY_LEGGINGS_UNLOCALIZED_NAME);
+	GameRegistry.registerItem(myBoots, Reference.MY_BOOTS_UNLOCALIZED_NAME);
+    }
+
+    /**
+     * A subroutine which registers all of the blocks of the mod.
+     */
+    private void registerBlocks()
+    {
+	GameRegistry.registerBlock(myOre, Reference.MY_ORE_UNLOCALIZED_NAME);
+	GameRegistry.registerBlock(rainbowWool, Reference.RAINBOW_WOOL_UNLOCALIZED_NAME);
+    }
+
+    /**
+     * This method makes sure all of the crafting recipes of your mod are
+     * registered.
+     */
+    private void registerCrafting()
+    {
+	// The 3 strings represent the three rows of the crafting 3x3 square.
+	// My Pickaxe.
+	CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(myPickaxe, 1), "MMM",
+													   " S ",
+													   " S ",
+													   'M', myIngot,
+													   'S', Items.stick));
+
+	// My Sword.
+	CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(mySword, 1), " M ",
+													 " M ",
+													 " S ",
+													 'M', myIngot,
+													 'S', Items.stick));
+
+	// My Helmet.
+	CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(myHelmet, 1), "MMM",
+													  "M M",
+													  "   ",
+													  'M', myIngot));
+	// My Chestplate.
+	CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(myChestplate, 1), "M M",
+		  "MMM",
+		  "MMM",
+		  'M', myIngot));
+	
+	// My Leggings
+	CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(myLeggings, 1), "MMM",
+		  "M M",
+		  "M M",
+		  'M', myIngot));
+	
+	// My Boots.
+	CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(myBoots, 1), "   ",
+		  "M M",
+		  "M M",
+		  'M', myIngot));
+	
+	// My Jam.
+	CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(myJam, 1), Blocks.glass, Items.apple));
+    }
+
+    /**
+     * Register all the (s)melting recipes.
+     */
+    private void registerSmelting()
+    {
+	GameRegistry.addSmelting(myOre, new ItemStack(myIngot), 5F);
+    }
+
+    /**
+     * Register all the remaining things that havn't been registered yet.
+     */
+    private void worldRegistration()
+    {
+	GameRegistry.registerWorldGenerator(worldGen, 0);
+    }
+    
+    private void initializeBiomes()
+    {
+	myBiome = new BiomeGenMy(1);
+    }
+    
+    private void registerBiomes()
+    {
+	// This Blob of code is used to set the spawn biome to your own.
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.desert);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.beach);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.birchForest);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.birchForestHills);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.coldBeach);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.coldTaiga);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.coldTaigaHills);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.deepOcean);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.extremeHills);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.desertHills);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.extremeHillsEdge);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.extremeHillsPlus);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.forest);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.forestHills);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.frozenOcean);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.frozenRiver);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.hell);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.iceMountains);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.icePlains);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.jungle);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.jungleEdge);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.jungleHills);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.megaTaiga);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.megaTaigaHills);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.mesa);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.mesaPlateau);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.mesaPlateau_F);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.mushroomIsland);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.mushroomIslandShore);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.ocean);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.plains);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.river);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.roofedForest);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.savanna);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.savannaPlateau);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.sky);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.stoneBeach);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.swampland);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.taiga);
+//	BiomeManager.removeSpawnBiome(BiomeGenBase.taigaHills);
+	
+	BiomeDictionary.registerBiomeType(myBiome, Type.FOREST);
+	BiomeManager.addSpawnBiome(myBiome);
+    }
+    
+    private void registerEntities()
+    {
+	EntityRegistry.registerModEntity(EntityRainbowSheep.class, "Rainbow Sheep", 255, this, 64, 1, true);
+	EntityRegistry.addSpawn(EntityRainbowSheep.class, 200, 1, 8, EnumCreatureType.creature);
+	EntityList.addMapping(EntityRainbowSheep.class, "Rainbow Sheep", 255, Color.RED.getRGB(), Color.magenta.getRGB());
+    }
+    
+    private void registerAchievements()
+    {
+	achievementMySword = new Achievement("achievement.mySword", "mySword", 0, 0, new ItemStack(mySword, 1), (Achievement) null).registerStat();
+	
+	AchievementPage.registerAchievementPage(new AchievementPage("My Mod", new Achievement[]{achievementMySword}));
+    }
+    
+    private void registerEvents()
+    {
+	FMLCommonHandler.instance().bus().register(new MyOnCraftEvent());
+    }
+}

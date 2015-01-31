@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="cpw.mods.fml.common.event.FMLPostInitializationEvent"/>
+<fullyQualifiedTypeName name="cpw.mods.fml.common.Mod"/>
+<fullyQualifiedTypeName name="cpw.mods.fml.common.SidedProxy"/>
+<fullyQualifiedTypeName name="net.minecraft.item.ItemTool"/>
+<fullyQualifiedTypeName name="java.util.Set"/>
+<fullyQualifiedTypeName name="com.google.common.collect.Sets"/>
+<fullyQualifiedTypeName name="myMod.item.MyPickaxe"/>
+<fullyQualifiedTypeName name="cpw.mods.fml.common.registry.GameRegistry"/>
+<fullyQualifiedTypeName name="cpw.mods.fml.relauncher.Side"/>
+<fullyQualifiedTypeName name="net.minecraft.item.crafting.CraftingManager"/>
+<fullyQualifiedTypeName name="myMod.item.MyFood"/>
+<fullyQualifiedTypeName name="net.minecraft.init.Items"/>
+<fullyQualifiedTypeName name="net.minecraftforge.oredict.ShapelessOreRecipe"/>
+<fullyQualifiedTypeName name="java.util.Random"/>
+<fullyQualifiedTypeName name="net.minecraft.entity.Entity"/>
+<fullyQualifiedTypeName name="net.minecraft.item.ItemArmor.ArmorMaterial"/>
+<fullyQualifiedTypeName name="net.minecraft.creativetab.CreativeTabs"/>
+<fullyQualifiedTypeName name="net.minecraftforge.common.BiomeDictionary"/>
+<fullyQualifiedTypeName name="net.minecraftforge.common.BiomeDictionary.Type"/>
+<fullyQualifiedTypeName name="myMod.biome.BiomeGenMy"/>
+<fullyQualifiedTypeName name="com.mojang.realmsclient.dto.McoServer.WorldType"/>
+<fullyQualifiedTypeName name="net.minecraft.world.WorldType"/>
+<fullyQualifiedTypeName name="net.minecraft.init.Blocks"/>
+<fullyQualifiedTypeName name="net.minecraftforge.common.BiomeManager.BiomeType"/>
+<fullyQualifiedTypeName name="net.minecraft.world.biome.BiomeGenBase"/>
+<fullyQualifiedTypeName name="net.minecraft.block.Block"/>
+<fullyQualifiedTypeName name="myMod.common.MyMod"/>
+<fullyQualifiedTypeName name="cpw.mods.fml.common.registry.EntityRegistry"/>
+<fullyQualifiedTypeName name="net.minecraft.entity.EnumCreatureType"/>
+<fullyQualifiedTypeName name="cpw.mods.fml.client.registry.RenderingRegistry"/>
+<fullyQualifiedTypeName name="myMod.entity.EntityRainbowSheep"/>
+<fullyQualifiedTypeName name="myMod.util.Reference"/>
+<fullyQualifiedTypeName name="com.sun.prism.paint.Color"/>
+<fullyQualifiedTypeName name="java.awt.Color"/>
+<fullyQualifiedTypeName name="net.minecraft.stats.AchievementList"/>
+<fullyQualifiedTypeName name="cpw.mods.fml.common.gameevent.PlayerEvent"/>
+<fullyQualifiedTypeName name="cpw.mods.fml.common.gameevent.PlayerEvent.ItemSmeltedEvent"/>
+<fullyQualifiedTypeName name="net.minecraft.item.ItemStack"/>
+<fullyQualifiedTypeName name="cpw.mods.fml.common.FMLCommonHandler"/>
+<fullyQualifiedTypeName name="net.minecraft.block.material.Material"/>
+<fullyQualifiedTypeName name="net.minecraft.item.Item"/>
+</qualifiedTypeNameHistroy>

@@ -1,0 +1,13 @@
+item.myPickaxe.name=My Pickaxe
+item.mySword.name=My Sword
+item.myIngot.name=My Ingot
+item.myJam.name=My Jam
+item.myHelmet.name=My Helmet
+item.myChestplate.name=My Chestplate
+item.myLeggings.name=My Leggings
+item.myBoots.name=My Boots
+
+tile.myOre.name=My Ore
+
+achievement.mySword=My Sword
+achievement.mySword.desc=Your very own sword!
